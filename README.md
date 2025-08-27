@@ -136,7 +136,7 @@ A huge thank you to the creators and maintainers of the following open-source pr
   - **ByteTrack**
   - The entire open-source **computer vision and machine learning community** ❤️
 
-<!-- end list -->
+
 
 ```
 ```

@@ -336,41 +336,6 @@ def run(source, calib_seconds=CALIB_SECONDS_DEFAULT, tracker_name="auto", debug=
     H = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) or 720
     FPS = cap.get(cv2.CAP_PROP_FPS) or 25.0
     print(f"[INFO] Source opened: {W}x{H} @ {FPS:.1f}fps")
-    tracker_type = tracker_name.lower()
-    if tracker_type == "auto":
-        if HAS_DEEPSORT:
-            tracker_type = "deepsort"
-        elif HAS_BYTETRACK:
-            tracker_type = "bytetrack"
-        else:
-            tracker_type = "simple"
-    print(f"[INFO] Tracker selected: {tracker_type}")
-    deepsort = None
-    bytetrack = None
-    simple_tracker = None
-    if tracker_type == "deepsort" and HAS_DEEPSORT:
-        try:
-            deepsort = DeepSort(max_age=TRACK_MAX_DISAPPEAR)
-            print("[INFO] DeepSORT initialized.")
-        except Exception as e:
-            print("[WARN] DeepSORT init failed:", e)
-            deepsort = None
-    if tracker_type == "bytetrack" and HAS_BYTETRACK:
-        try:
-            bytetrack = ByteTrackWrapper(
-                fps=FPS, track_thresh=max(0.1, CONF_THRES * 0.8), match_thresh=0.8, track_buffer=TRACK_MAX_DISAPPEAR
-            )
-            print("[INFO] ByteTrack initialized.")
-        except Exception as e:
-            print("[WARN] ByteTrack init failed:", e)
-            bytetrack = None
-    if deepsort is None and bytetrack is None:
-        simple_tracker = SimpleTracker(max_disappear=TRACK_MAX_DISAPPEAR, max_dist=TRACK_ASSOC_MAX_DIST)
-        print("[INFO] Using fallback SimpleTracker.")
-    if not os.path.exists(CSV_LOG):
-        pd.DataFrame(
-            columns=["time", "frame", "going_active", "coming_active", "going_total", "coming_total", "total_active"]
-        ).to_csv(CSV_LOG, index=False)
     print(f"[INFO] Calibration for ~{calib_seconds}s. Please ensure moving traffic.")
     calib_start = time.time()
     frame_count = 0
